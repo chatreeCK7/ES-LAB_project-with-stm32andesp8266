@@ -108,25 +108,38 @@ void loop() {
             
             // Display the HTML web page
             client.println("<!DOCTYPE html><html>");
-            client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+            client.println("<head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Final project</title>");
             client.println("<link rel=\"icon\" href=\"data:,\">");
             // CSS to style the on/off buttons 
             // Feel free to change the background-color and font-size attributes to fit your preferences
-            client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-            client.println(".buttonOn { background-color: #00FF00; border: none; color: white; padding: 16px 40px;");
-            client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-            client.println(".buttonOff {background-color: #FF0000; border: none; color: white; padding: 16px 40px;}</style></head>");
+            client.println("<style>html { font-family: Helvetica; display: inline-block; text-align: center; background-color: #fff0d9;}");
+            client.println(".buttonOn { margin: 2px; background-color: #8FE381; border: 2px solid #422800; border-radius: 30px;box-shadow: #422800 4px 4px 0 0;");
+            client.println("color: #422800; cursor: pointer; display: inline-block; font-weight: 600; font-size: 18px; padding: 0 18px; line-height: 50px;");
+            client.println("text-align: center; text-decoration: none; user-select: none; -webkit-user-select: none; touch-action: manipulation;}");
+            client.println(".buttonOn:hover { background-color: #5fa95b;}");
+            client.println(".buttonOn:active { box-shadow: #422800 2px 2px 0 0; transform: translate(2px, 2px);}");
+            client.println("@media (min-width: 768px) {.buttonOn { min-width: 120px; padding: 0 25px; }}");
+            client.println(".buttonOff { margin: 2px; background-color: #FE6862; border: 2px solid #422800; border-radius: 30px;box-shadow: #422800 4px 4px 0 0;");
+            client.println("color: #422800; cursor: pointer; display: inline-block; font-weight: 600; font-size: 18px; padding: 0 18px; line-height: 50px;");
+            client.println("text-align: center; text-decoration: none; user-select: none; -webkit-user-select: none; touch-action: manipulation;}");
+            client.println(".buttonOff:hover { background-color: #c23b22;}");
+            client.println(".buttonOff:active { box-shadow: #422800 2px 2px 0 0; transform: translate(2px, 2px);}");
+            client.println("@media (min-width: 768px) {.buttonOff { min-width: 120px; padding: 0 25px; }}");
+            client.println(".header { color: #422800; margin-top: 150px;} ");
+            client.println(".showState{ color: #836953; font-family: sans-serif; font-weight: 18px; font-size: large; margin: 30px;");
+            client.println(" border: 2px solid #422800; border-radius: 30px; display: inline-block; line-height: 50px; text-align: center; text-decoration: none;");
+            client.println(" user-select: none; padding: 0 50px;}</style></head>");
             
             // Web Page Heading
-            client.println("<body><h1>ESP8266 Web Server</h1>");
+            client.println("<body><div class=\"header\"><h1>ESP8266 Web Server</h1></div>");
             
             // Display current state, and ON/OFF buttons for GPIO 5  
-            client.println("<p>GPIO 5 - State " + outputLD2 + "</p>");
+            client.println("<div class=\"showState\"><p>GPIO 5 - State " + outputLD2 + "</p></div>");
             // If the outputLD2 is off, it displays the ON button       
             if (outputLD2=="off") {
               client.println("<p><a href=\"/5/on\"><button class=\"buttonOn\">ON</button></a></p>");
             } else {
-              client.println("<p><a href=\"/5/off\"><button class=\"buttonOff\">OFF</button></a></p>");
+              client.println("<p><a href=\"/5/off\"><button class=\"buttonOff\">OFF</button></a></p></body></html>");
             } 
                
             // The HTTP response ends with another blank line
