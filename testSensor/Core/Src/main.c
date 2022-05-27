@@ -48,8 +48,8 @@ UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart6;
 
 /* USER CODE BEGIN PV */
-static const uint8_t TMP102_ADDR = 0x48 << 1; // Use 8-bit address
-static const uint8_t REG_TEMP = 0x00;
+char data[32] = " ";
+char data1[32] = " ";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -174,52 +174,48 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_1);
   HAL_UART_Receive_IT(&huart6, (uint8_t *)&rec, 1);
+  uint8_t data_read[4];
+     uint8_t data_read1[4];
+     int16_t aux;
+     int16_t aux1;
+     int16_t ambient_temperature;
+     int16_t ambient_temperature1;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+     HAL_StatusTypeDef status;
+         status = HAL_I2C_IsDeviceReady(&hi2c1, (0x5A<<1), 4, 100);
+         if(status==HAL_OK){
+       	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+       	  HAL_Delay(1000);
+       	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+         }
   while (1)
   {
-	  // Tell TMP102 that we want to read from the temperature register
-	      buf[0] = REG_TEMP;
-	      ret = HAL_I2C_Master_Transmit(&hi2c1, TMP102_ADDR, buf, 1, HAL_MAX_DELAY);
-	      if ( ret != HAL_OK ) {
-	        strcpy((char*)buf, "Error Tx\r\n");
-	      } else {
+	  HAL_I2C_Mem_Read(&hi2c1,(0x5A<<1), 0x06, 1, (uint8_t *)data_read, 2, 100);
 
-	        // Read 2 bytes from the temperature register
-	        ret = HAL_I2C_Master_Receive(&hi2c1, TMP102_ADDR, buf, 2, HAL_MAX_DELAY);
-	        if ( ret != HAL_OK ) {
-	          strcpy((char*)buf, "Error Rx\r\n");
-	        } else {
+	  	  	  aux = (int16_t) ((data_read[1] << 8) | data_read[0]);
+	  	  	  ambient_temperature = aux * 0.02 - 273.15;
 
-	          //Combine the bytes
-	          val = ((int16_t)buf[0] << 4) | (buf[1] >> 4);
+	  	  	  HAL_Delay(100);
 
-	          // Convert to 2's complement, since temperature can be negative
-	          if ( val > 0x7FF ) {
-	            val |= 0xF000;
-	          }
+	  	  	  HAL_I2C_Mem_Read(&hi2c1,(0x5A<<1), 0x07, 1, (uint8_t *)data_read1, 2, 100);
 
-	          // Convert to float temperature value (Celsius)
-	          temp_c = val * 0.0625;
+	  	  	  aux1 = (int16_t) ((data_read1[1] << 8) | data_read1[0]);
+	  	  	  ambient_temperature1 = aux1 * 0.02 - 273.15;
 
-	          // Convert temperature to decimal format
-	          temp_c *= 100;
-	          sprintf((char*)buf,
-	                "%u.%u C\r\n",
-	                ((unsigned int)temp_c / 100),
-	                ((unsigned int)temp_c % 100));
-	        }
-	      }
+	  	  	  HAL_Delay(100);
 
-	      // Send out buffer (temperature or error message)
-	      HAL_UART_Transmit(&huart2, buf, strlen((char*)buf), HAL_MAX_DELAY);
+	  	  	  sprintf(data,"\f Ambient = %d \n\r", ambient_temperature);
 
-	      // Wait
-	      HAL_Delay(500);
-	  HAL_UART_Transmit(&huart6, senddata, strlen(senddata), 100);
-	  HAL_Delay(1000);
+	  	  	  sprintf(data1,"\f\t Object = %d \n\r", ambient_temperature1);
+
+	  	  	  HAL_UART_Transmit(&huart2, (uint8_t*)data, strlen(data), 1000);
+	  	  	  HAL_UART_Transmit(&huart2, (uint8_t*)data1, strlen(data1), 1000);
+
+
+	  //HAL_UART_Transmit(&huart6, senddata, strlen(senddata), 100);
 	  HCSR04_Read();
 	  char buffer[100];
 	  //sprintf(buffer, "%d%d%d cm \r\n", (Distance/100) + 48, ((Distance/10)%10) +48, (Distance%10)+48);
