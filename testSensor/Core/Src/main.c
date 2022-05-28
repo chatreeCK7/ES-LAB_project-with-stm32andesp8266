@@ -72,12 +72,14 @@ void delay (uint16_t time)
 	while (__HAL_TIM_GET_COUNTER (&htim1) < time);
 }
 
-uint32_t IC_Val1 = 0;
-uint32_t IC_Val2 = 0;
-uint32_t Difference = 0;
-uint8_t Is_First_Captured = 0;  // is the first value captured ?
-uint8_t Distance  = 0;
-int state = 0; // false
+#define TRIG_PIN GPIO_PIN_9
+#define TRIG_PORT GPIOA
+#define ECHO_PIN GPIO_PIN_8
+#define ECHO_PORT GPIOA
+uint32_t pMillis;
+uint32_t Value1 = 0;
+uint32_t Value2 = 0;
+uint16_t Distance  = 0;  // cm
 uint8_t senddata[] = "Hello World";
 char senddata_2[100];
 char rec;
@@ -94,45 +96,11 @@ void HAL_UART_RxCpItCallback(UART_HandleTypeDef *huart) {
 	HAL_UART_Receive_IT(&huart6, (uint8_t *)&rec, 1);
 }
 
-#define TRIG_PIN GPIO_PIN_9
-#define TRIG_PORT GPIOA
 
 // Let's write the callback function
 
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-{
-if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1) // if the interrupt source is channel1
-{
-if (Is_First_Captured==0) // if the first value is not captured
-{
-TIM2->CNT = 0;
-Is_First_Captured = 1; // set the first captured as true
-// Now change the polarity to falling edge
-__HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_FALLING);
-}
-else if (Is_First_Captured==1)  // if the first is already captured
-{
-Difference = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1); // read second value
 
-Distance = Difference * .034/2;
-Is_First_Captured = 0; // set it back to false
 
-// set polarity to rising edge
-__HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
-
-}
-}
-
-}
-
-void HCSR04_Read (void)
-{
-	HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_SET);  // pull the TRIG pin HIGH
-	delay(10);  // wait for 10 us
-	HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_RESET);  // pull the TRIG pin low
-
-	__HAL_TIM_ENABLE_IT(&htim1, TIM_IT_CC1);
-}
 
 /* USER CODE END 0 */
 
@@ -172,14 +140,15 @@ int main(void)
   MX_TIM1_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_Base_Start(&htim1);
+  HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_RESET);  // pull the TRIG pin low
   HAL_UART_Receive_IT(&huart6, (uint8_t *)&rec, 1);
   uint8_t data_read[4];
-     uint8_t data_read1[4];
-     int16_t aux;
-     int16_t aux1;
-     int16_t ambient_temperature;
-     int16_t ambient_temperature1;
+  uint8_t data_read1[4];
+  int16_t aux;
+  int16_t aux1;
+  int16_t ambient_temperature;
+  int16_t ambient_temperature1;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -193,6 +162,27 @@ int main(void)
          }
   while (1)
   {
+
+	  HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_SET);  // pull the TRIG pin HIGH
+	      __HAL_TIM_SET_COUNTER(&htim1, 0);
+	      while (__HAL_TIM_GET_COUNTER (&htim1) < 10);  // wait for 10 us
+	      HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_RESET);  // pull the TRIG pin low
+
+	      pMillis = HAL_GetTick(); // used this to avoid infinite while loop  (for timeout)
+	      // wait for the echo pin to go high
+	      while (!(HAL_GPIO_ReadPin (ECHO_PORT, ECHO_PIN)) && pMillis + 10 >  HAL_GetTick());
+	      Value1 = __HAL_TIM_GET_COUNTER (&htim1);
+
+	      pMillis = HAL_GetTick(); // used this to avoid infinite while loop (for timeout)
+	      // wait for the echo pin to go low
+	      while ((HAL_GPIO_ReadPin (ECHO_PORT, ECHO_PIN)) && pMillis + 50 > HAL_GetTick());
+	      Value2 = __HAL_TIM_GET_COUNTER (&htim1);
+
+	      Distance = (Value2-Value1)* 0.034/2;
+	      sprintf(data,"%d \r\n", Distance);
+	      HAL_UART_Transmit(&huart2, (uint8_t*)data, strlen(data), 1000);
+	      HAL_Delay(50);
+
 	  HAL_I2C_Mem_Read(&hi2c1,(0x5A<<1), 0x06, 1, (uint8_t *)data_read, 2, 100);
 
 	  	  	  aux = (int16_t) ((data_read[1] << 8) | data_read[0]);
@@ -207,31 +197,20 @@ int main(void)
 
 	  	  	  HAL_Delay(100);
 
-	  	  	  sprintf(data,"\f Ambient = %d \n\r", ambient_temperature);
+	  	  	  sprintf(data,"\f Ambient = %d \r\n", ambient_temperature);
 
-	  	  	  sprintf(data1,"\f\t Object = %d \n\r", ambient_temperature1);
+	  	  	  sprintf(data1,"%d %d \r\n", ambient_temperature1, Distance);
 
 	  	  	  HAL_UART_Transmit(&huart2, (uint8_t*)data, strlen(data), 1000);
 	  	  	  HAL_UART_Transmit(&huart2, (uint8_t*)data1, strlen(data1), 1000);
+	  	  	  HAL_UART_Transmit(&huart6, (uint8_t*)data1, strlen(data1), 1000);
 
 
 	  //HAL_UART_Transmit(&huart6, senddata, strlen(senddata), 100);
-	  HCSR04_Read();
-	  char buffer[100];
-	  //sprintf(buffer, "%d%d%d cm \r\n", (Distance/100) + 48, ((Distance/10)%10) +48, (Distance%10)+48);
-	  sprintf(buffer, "%d cm \r\n", Distance - 9);
-	  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
-	  if (Distance - 9 < 0) {
-		  state = 0;
-	  }
-	  else if (Distance - 9 <= 40) {
-		  state = 1;
-	  }
-	  sprintf(buffer, "%d\r\n", state);
-	  HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
+	  //HAL_UART_Transmit(&huart2, buffer, strlen(buffer), 100);
 	  HAL_Delay(200);
-	  sprintf(senddata_2, "%d", state);
-	  HAL_UART_Transmit(&huart6, senddata_2, strlen(senddata_2), 100);
+	  //sprintf(senddata_2, "%d", state);
+	  //HAL_UART_Transmit(&huart6, senddata_2, strlen(senddata_2), 100);
 	  HAL_Delay(1000);
 //	  HAL_UART_Transmit(&huart6, senddata, strlen(senddata), 100);
 //	  HAL_Delay(1000);
@@ -502,4 +481,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
