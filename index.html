@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final project</title>
+    <style>
+    html { font-family: Helvetica; display: inline-block; text-align: center; background-color: #fff0d9; 
+    }
+    .buttonOn {
+    margin: 2px; 
+    background-color: #8FE381;
+    border: 2px solid #422800;
+    border-radius: 30px;
+    box-shadow: #422800 4px 4px 0 0;
+    color: #422800;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 18px;
+    padding: 0 18px;
+    line-height: 50px;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;}
+    .buttonOn:hover {
+    background-color: #5fa95b;
+    }
+    .buttonOn:active {
+    box-shadow: #422800 2px 2px 0 0;
+    transform: translate(2px, 2px);
+    }
+    @media (min-width: 768px) {
+        .buttonOn {
+            min-width: 120px;
+            padding: 0 25px;
+        }
+    }
+    .buttonOff {
+    margin: 2px; 
+    background-color: #FE6862;
+    border: 2px solid #422800;
+    border-radius: 30px;
+    box-shadow: #422800 4px 4px 0 0;
+    color: #422800;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 18px;
+    padding: 0 18px;
+    line-height: 50px;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;}
+    .buttonOff:hover {
+    background-color: #c23b22;
+    }
+    .buttonOff:active {
+    box-shadow: #422800 2px 2px 0 0;
+    transform: translate(2px, 2px);
+    }
+    @media (min-width: 768px) {
+        .buttonOff {
+            min-width: 120px;
+            padding: 0 25px;
+        }
+    }
+    .header {
+        color: #422800;
+        margin-top: 150px;        
+    }
+
+    .showState{
+        color: #836953;
+        font-family: sans-serif;
+        font-weight: 18px;
+        font-size: large;
+        margin: 30px;
+        border: 2px solid #422800;
+        border-radius: 30px;
+        display: inline-block;
+        line-height: 50px;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        padding: 0 50px;
+        
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ESP8266 Web Server</h1>
+    </div>
+    <div class="showState">
+        <strong><p>GPIO 5 - State " outputLD2 "</p></strong>
+    </div>
+    <p><a href="/5/on"><button class="buttonOn">ON</button></a></p>
+    <p><a href="/5/off"><button class="buttonOff">OFF</button></a></p>
+</body>
+</html>
