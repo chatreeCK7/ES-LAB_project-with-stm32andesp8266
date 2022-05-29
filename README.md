@@ -8,3 +8,7 @@ to the internet, corresponding to the topic of IoT or The Internet of Thing.
 
 Our team wanted to turn the lights on and off through motion detection. and send information from Temperature detection is up web server which when moving through the door will turn on the light. with temperature measurement when entering
 
+## Example of usage
+
+Let me give an example of the situation as follows: when I travel from home, I am very tired. Hands may have germs to avoid contact with equipment, tools, appliances, so we think of devices that when walking into the house and don't want to touch, can turn on the light and if you want to measure the temperature, you can measure and when you're done washing your hands, you can press display. to see the temperature that we measure when entering the house
+
