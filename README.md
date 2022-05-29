@@ -19,4 +19,6 @@ Let me give an example of the situation as follows: when I travel from home, I a
 
 ## Document
 
+[Document](https://github.com/chatreeCK7/ES-LAB_project-with-stm32andesp8622/blob/main/ES-LAB_Report.pdf)
+
 
