@@ -7,8 +7,8 @@ SoftwareSerial mySerial(D4, D5); //RX, TX
 // (Send and Receive)\
 
 //Replace with my networl credentials
-const char* ssid = "iPhoneeeeee";
-const char* password = "11111111";
+const char* ssid = "jck";
+const char* password = "jck12345678";
 //Set web server port number to 8888
 WiFiServer server(80);
 
@@ -17,7 +17,7 @@ String header;
 
 //Auxiliar variable to store the current output store
 String outputLD2 = "off";
-
+String IP = "";
 //Assign output variable to GPIO pins
 const byte outputPin = D0;
 
@@ -55,6 +55,7 @@ void setup() {
   Serial.println("WiFi connected.");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  IP = IpAddress2String(WiFi.localIP());
   server.begin();
 }
 bool state = false;
@@ -157,8 +158,10 @@ void loop() {
             if(distance <=40 && outputLD2 == "off"){
               outputLD2=="on";
               state = true;
-              Serial.println("REDIRECT!!!!!");
-              client.println("<script>window.location.replace(\"http://172.20.10.2/5/on\");</script>");
+              Serial.println("REDIRECT!!!!! : http://" + IP + "/5/on");
+              
+              client.println("<script>window.location.replace(\"http://172.20.10.7/5/on\");</script>");
+//              client.println("<script>window.location.replace(\"http://\"" + IP + "\"/5/on\");</script>");
 //              delay(500);
             }
             // Display current state, and ON/OFF buttons for GPIO 5  
@@ -210,4 +213,11 @@ String getValue(String data, char separator, int index)
   }
 
   return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+}
+String IpAddress2String(const IPAddress& ipAddress)
+{
+  return String(ipAddress[0]) + String(".") +\
+  String(ipAddress[1]) + String(".") +\
+  String(ipAddress[2]) + String(".") +\
+  String(ipAddress[3])  ; 
 }
