@@ -7,8 +7,8 @@ SoftwareSerial mySerial(D4, D5); //RX, TX
 // (Send and Receive)\
 
 //Replace with my networl credentials
-const char* ssid = "jck";
-const char* password = "jck12345678";
+const char* ssid = "iPhoneeeeee";
+const char* password = "11111111";
 //Set web server port number to 8888
 WiFiServer server(80);
 
@@ -81,7 +81,7 @@ void loop() {
       Serial.print(distance);
       Serial.print(" ");
       Serial.println(state);
-      if(outputLD2 == "on" && distance <=40){
+      if(outputLD2 == "on"){
         state = true;
       }
       if(state) digitalWrite(outputPin, HIGH); //LED on
@@ -151,8 +151,16 @@ void loop() {
             
             // Web Page Heading
             client.println("<body><div class=\"header\"><h1>ESP8266 Web Server</h1></div>");
-            client.println("<script>let counter = 1;setInterval(() => {counter++;if(counter > 5) location.reload();}, 1000);</script>");
-
+            client.println("<script>let counter = 1;setInterval(() => {counter++;if(counter > 25) location.reload();}, 200);</script>");
+//            client.println("<script>redir(()=>{window.location.replace(\"172.20.10.2/5/on\");});</script>");
+//            client.println("<script>if(distance<=40) redir(); </script>");
+            if(distance <=40 && outputLD2 == "off"){
+              outputLD2=="on";
+              state = true;
+              Serial.println("REDIRECT!!!!!");
+              client.println("<script>window.location.replace(\"http://172.20.10.2/5/on\");</script>");
+//              delay(500);
+            }
             // Display current state, and ON/OFF buttons for GPIO 5  
             client.println("<div class=\"showState\"><p> Temparature:" + String(temp) + "</p></div>");
             client.println("<div class=\"showState\"><p>GPIO 5 - State " + outputLD2 + "</p></div>");
@@ -160,6 +168,7 @@ void loop() {
             if (outputLD2=="off") {
               client.println("<p><a href=\"/5/on\"><button class=\"buttonOn\">ON</button></a></p>");
             } else {
+              
               client.println("<p><a href=\"/5/off\"><button class=\"buttonOff\">OFF</button></a></p></body></html>");
             }
             // The HTTP response ends with another blank line
