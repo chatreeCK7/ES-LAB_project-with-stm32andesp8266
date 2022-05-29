@@ -15,6 +15,7 @@ Let me give an example of the situation as follows: when I travel from home, I a
 # Implementation
 
 ## Circuitry
+![github-large](https://raw.githubusercontent.com/chatreeCK7/ES-LAB_project-with-stm32andesp8622/main/illustarion-esp8266.png)
 
 ## Testing
 
