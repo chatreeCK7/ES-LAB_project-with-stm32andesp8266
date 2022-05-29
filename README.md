@@ -16,6 +16,7 @@ Let me give an example of the situation as follows: when I travel from home, I a
 
 ## Circuitry
 ![github-small](https://raw.githubusercontent.com/chatreeCK7/ES-LAB_project-with-stm32andesp8622/main/Circuit%20Scheme.jpg)
+*Figure 1: Circuit Diagram*
 
 ## Document
 
