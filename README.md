@@ -1,5 +1,5 @@
 
-# ES-LAB_project-with-stm32andesp8622
+# Embedded System LAB Project-with-stm32andesp8266
 
 ## Introduction
 
@@ -17,6 +17,6 @@ Let me give an example of the situation as follows: when I travel from home, I a
 ## Circuitry
 ![github-small](https://raw.githubusercontent.com/chatreeCK7/ES-LAB_project-with-stm32andesp8622/main/Circuit%20Scheme.jpg)
 
-## Testing
+## Document
 
-## Results
+
