@@ -19,7 +19,7 @@ String header;
 String outputLD2 = "off";
 
 //Assign output variable to GPIO pins
-const byte outputPin = LED_BUILTIN;
+const byte outputPin = D0;
 
 //Current time
 unsigned long currentTime = millis();
@@ -42,6 +42,7 @@ void setup() {
 //  pinMode(rxPin, INPUT);      
 //  pinMode(txPin, OUTPUT);
   pinMode(outputPin, OUTPUT);
+//  pinMode(D0,OUTPUT);
 //
   digitalWrite(outputPin, HIGH);
   while (WiFi.status() != WL_CONNECTED) {
@@ -56,17 +57,35 @@ void setup() {
   Serial.println(WiFi.localIP());
   server.begin();
 }
-
+bool state = false;
+String input ="";
+int temp,distance;
 void loop() {
-
+  
+  
   if(Serial.available() > 0){//Read from serial monitor and send 
-      String input = Serial.readString();
-      mySerial.println(input);    
+      input = Serial.readString();
+      mySerial.println(input);
     }
-   
+    
     if(mySerial.available() > 1){//Read from  STM module and send to serial monitor
-      String input = mySerial.readString();
-      Serial.println(input);    
+      input = mySerial.readString();
+      Serial.println(input);
+      if(input.length() >=4){
+        temp = (getValue(input,' ',0).toInt()==0)? 99:getValue(input,' ',0).toInt();
+        distance = (getValue(input,' ',1).toInt()==0)?distance:getValue(input,' ',1).toInt();
+      }
+      Serial.print("=>");
+      Serial.print(temp);
+      Serial.print(" ");
+      Serial.print(distance);
+      Serial.print(" ");
+      Serial.println(state);
+      if(outputLD2 == "on" && distance <=40){
+        state = true;
+      }
+      if(state) digitalWrite(outputPin, HIGH); //LED on
+      else {digitalWrite(outputPin, LOW);}
     }
     delay(20);
     
@@ -99,11 +118,11 @@ void loop() {
             if (header.indexOf("GET /5/on") >= 0) {
               Serial.println("GPIO 5 on");
               outputLD2 = "on";
-              digitalWrite(outputPin, LOW);
             } else if (header.indexOf("GET /5/off") >= 0) {
               Serial.println("GPIO 5 off");
               outputLD2 = "off";
-              digitalWrite(outputPin, HIGH);
+              state = false;
+              
             } 
             
             // Display the HTML web page
@@ -132,28 +151,32 @@ void loop() {
             
             // Web Page Heading
             client.println("<body><div class=\"header\"><h1>ESP8266 Web Server</h1></div>");
-            
+            client.println("<script>let counter = 1;setInterval(() => {counter++;if(counter > 5) location.reload();}, 1000);</script>");
+
             // Display current state, and ON/OFF buttons for GPIO 5  
+            client.println("<div class=\"showState\"><p> Temparature:" + String(temp) + "</p></div>");
             client.println("<div class=\"showState\"><p>GPIO 5 - State " + outputLD2 + "</p></div>");
             // If the outputLD2 is off, it displays the ON button       
             if (outputLD2=="off") {
               client.println("<p><a href=\"/5/on\"><button class=\"buttonOn\">ON</button></a></p>");
             } else {
               client.println("<p><a href=\"/5/off\"><button class=\"buttonOff\">OFF</button></a></p></body></html>");
-            } 
-               
+            }
             // The HTTP response ends with another blank line
             client.println();
             // Break out of the while loop
             break;
-          } else { // if you got a newline, then clear currentLine
+          } else { // if you got a newline, then clear currentLine  
+//            Serial.println("2");
             currentLine = "";
           }
-        } else if (c != '\r') {  // if you got anything else but a carriage return character,
+        } else if (c != '\r') {  // if you got anything else but a carriage return character, // time gap when switch page on-off
+//          Serial.println("3");  
           currentLine += c;      // add it to the end of the currentLine
         }
       }
     }
+    
     // Clear the header variable
     header = "";
     // Close the connection
@@ -161,4 +184,21 @@ void loop() {
     Serial.println("Client disconnected.");
     Serial.println("");
   }
+}
+
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
