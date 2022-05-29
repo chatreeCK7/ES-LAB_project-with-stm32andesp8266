@@ -184,7 +184,7 @@ int main(void) {
 		aux = (int16_t) ((data_read[1] << 8) | data_read[0]);
 		ambient_temperature = aux * 0.02 - 273.15;
 
-		HAL_Delay(100);
+		HAL_Delay(1000);
 
 		HAL_I2C_Mem_Read(&hi2c1, (0x5A << 1), 0x07, 1, (uint8_t*) data_read1, 2,
 				100);
@@ -193,7 +193,7 @@ int main(void) {
 
 		ambient_temperature1 = aux1 * 0.02 - 273.15;
 
-		HAL_Delay(100);
+		HAL_Delay(1000);
 
 		sprintf(data, "Ambient = %d \r\n", ambient_temperature);
 		sprintf(data1, "%d %d \r\n", ambient_temperature1, Distance);

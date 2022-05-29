@@ -1467,106 +1467,105 @@ int main(void) {
  8001096:	4603      	mov	r3, r0
  8001098:	827b      	strh	r3, [r7, #18]
 
-		HAL_Delay(100);
- 800109a:	2064      	movs	r0, #100	; 0x64
- 800109c:	f000 fd3e 	bl	8001b1c <HAL_Delay>
+		HAL_Delay(1000);
+ 800109a:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+ 800109e:	f000 fd3d 	bl	8001b1c <HAL_Delay>
 
 		HAL_I2C_Mem_Read(&hi2c1, (0x5A << 1), 0x07, 1, (uint8_t*) data_read1, 2,
- 80010a0:	2364      	movs	r3, #100	; 0x64
- 80010a2:	9302      	str	r3, [sp, #8]
- 80010a4:	2302      	movs	r3, #2
- 80010a6:	9301      	str	r3, [sp, #4]
- 80010a8:	1d3b      	adds	r3, r7, #4
- 80010aa:	9300      	str	r3, [sp, #0]
- 80010ac:	2301      	movs	r3, #1
- 80010ae:	2207      	movs	r2, #7
- 80010b0:	21b4      	movs	r1, #180	; 0xb4
- 80010b2:	4839      	ldr	r0, [pc, #228]	; (8001198 <main+0x298>)
- 80010b4:	f001 f9f4 	bl	80024a0 <HAL_I2C_Mem_Read>
+ 80010a2:	2364      	movs	r3, #100	; 0x64
+ 80010a4:	9302      	str	r3, [sp, #8]
+ 80010a6:	2302      	movs	r3, #2
+ 80010a8:	9301      	str	r3, [sp, #4]
+ 80010aa:	1d3b      	adds	r3, r7, #4
+ 80010ac:	9300      	str	r3, [sp, #0]
+ 80010ae:	2301      	movs	r3, #1
+ 80010b0:	2207      	movs	r2, #7
+ 80010b2:	21b4      	movs	r1, #180	; 0xb4
+ 80010b4:	4838      	ldr	r0, [pc, #224]	; (8001198 <main+0x298>)
+ 80010b6:	f001 f9f3 	bl	80024a0 <HAL_I2C_Mem_Read>
 				100);
 
 		aux1 = (int16_t) ((data_read1[1] << 8) | data_read1[0]);
- 80010b8:	797b      	ldrb	r3, [r7, #5]
- 80010ba:	021b      	lsls	r3, r3, #8
- 80010bc:	b21a      	sxth	r2, r3
- 80010be:	793b      	ldrb	r3, [r7, #4]
- 80010c0:	b21b      	sxth	r3, r3
- 80010c2:	4313      	orrs	r3, r2
- 80010c4:	823b      	strh	r3, [r7, #16]
+ 80010ba:	797b      	ldrb	r3, [r7, #5]
+ 80010bc:	021b      	lsls	r3, r3, #8
+ 80010be:	b21a      	sxth	r2, r3
+ 80010c0:	793b      	ldrb	r3, [r7, #4]
+ 80010c2:	b21b      	sxth	r3, r3
+ 80010c4:	4313      	orrs	r3, r2
+ 80010c6:	823b      	strh	r3, [r7, #16]
 
 		ambient_temperature1 = aux1 * 0.02 - 273.15;
- 80010c6:	f9b7 3010 	ldrsh.w	r3, [r7, #16]
- 80010ca:	4618      	mov	r0, r3
- 80010cc:	f7ff fa32 	bl	8000534 <__aeabi_i2d>
- 80010d0:	a329      	add	r3, pc, #164	; (adr r3, 8001178 <main+0x278>)
- 80010d2:	e9d3 2300 	ldrd	r2, r3, [r3]
- 80010d6:	f7ff fa97 	bl	8000608 <__aeabi_dmul>
- 80010da:	4602      	mov	r2, r0
- 80010dc:	460b      	mov	r3, r1
- 80010de:	4610      	mov	r0, r2
- 80010e0:	4619      	mov	r1, r3
- 80010e2:	a327      	add	r3, pc, #156	; (adr r3, 8001180 <main+0x280>)
- 80010e4:	e9d3 2300 	ldrd	r2, r3, [r3]
- 80010e8:	f7ff f8d6 	bl	8000298 <__aeabi_dsub>
- 80010ec:	4602      	mov	r2, r0
- 80010ee:	460b      	mov	r3, r1
- 80010f0:	4610      	mov	r0, r2
- 80010f2:	4619      	mov	r1, r3
- 80010f4:	f7ff fd38 	bl	8000b68 <__aeabi_d2iz>
- 80010f8:	4603      	mov	r3, r0
- 80010fa:	81fb      	strh	r3, [r7, #14]
+ 80010c8:	f9b7 3010 	ldrsh.w	r3, [r7, #16]
+ 80010cc:	4618      	mov	r0, r3
+ 80010ce:	f7ff fa31 	bl	8000534 <__aeabi_i2d>
+ 80010d2:	a329      	add	r3, pc, #164	; (adr r3, 8001178 <main+0x278>)
+ 80010d4:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 80010d8:	f7ff fa96 	bl	8000608 <__aeabi_dmul>
+ 80010dc:	4602      	mov	r2, r0
+ 80010de:	460b      	mov	r3, r1
+ 80010e0:	4610      	mov	r0, r2
+ 80010e2:	4619      	mov	r1, r3
+ 80010e4:	a326      	add	r3, pc, #152	; (adr r3, 8001180 <main+0x280>)
+ 80010e6:	e9d3 2300 	ldrd	r2, r3, [r3]
+ 80010ea:	f7ff f8d5 	bl	8000298 <__aeabi_dsub>
+ 80010ee:	4602      	mov	r2, r0
+ 80010f0:	460b      	mov	r3, r1
+ 80010f2:	4610      	mov	r0, r2
+ 80010f4:	4619      	mov	r1, r3
+ 80010f6:	f7ff fd37 	bl	8000b68 <__aeabi_d2iz>
+ 80010fa:	4603      	mov	r3, r0
+ 80010fc:	81fb      	strh	r3, [r7, #14]
 
-		HAL_Delay(100);
- 80010fc:	2064      	movs	r0, #100	; 0x64
- 80010fe:	f000 fd0d 	bl	8001b1c <HAL_Delay>
+		HAL_Delay(1000);
+ 80010fe:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+ 8001102:	f000 fd0b 	bl	8001b1c <HAL_Delay>
 
 		sprintf(data, "Ambient = %d \r\n", ambient_temperature);
- 8001102:	f9b7 3012 	ldrsh.w	r3, [r7, #18]
- 8001106:	461a      	mov	r2, r3
- 8001108:	4928      	ldr	r1, [pc, #160]	; (80011ac <main+0x2ac>)
- 800110a:	4829      	ldr	r0, [pc, #164]	; (80011b0 <main+0x2b0>)
- 800110c:	f004 fdf2 	bl	8005cf4 <siprintf>
+ 8001106:	f9b7 3012 	ldrsh.w	r3, [r7, #18]
+ 800110a:	461a      	mov	r2, r3
+ 800110c:	4927      	ldr	r1, [pc, #156]	; (80011ac <main+0x2ac>)
+ 800110e:	4828      	ldr	r0, [pc, #160]	; (80011b0 <main+0x2b0>)
+ 8001110:	f004 fdf0 	bl	8005cf4 <siprintf>
 		sprintf(data1, "%d %d \r\n", ambient_temperature1, Distance);
- 8001110:	f9b7 200e 	ldrsh.w	r2, [r7, #14]
- 8001114:	4b24      	ldr	r3, [pc, #144]	; (80011a8 <main+0x2a8>)
- 8001116:	881b      	ldrh	r3, [r3, #0]
- 8001118:	4926      	ldr	r1, [pc, #152]	; (80011b4 <main+0x2b4>)
- 800111a:	4827      	ldr	r0, [pc, #156]	; (80011b8 <main+0x2b8>)
- 800111c:	f004 fdea 	bl	8005cf4 <siprintf>
+ 8001114:	f9b7 200e 	ldrsh.w	r2, [r7, #14]
+ 8001118:	4b23      	ldr	r3, [pc, #140]	; (80011a8 <main+0x2a8>)
+ 800111a:	881b      	ldrh	r3, [r3, #0]
+ 800111c:	4925      	ldr	r1, [pc, #148]	; (80011b4 <main+0x2b4>)
+ 800111e:	4826      	ldr	r0, [pc, #152]	; (80011b8 <main+0x2b8>)
+ 8001120:	f004 fde8 	bl	8005cf4 <siprintf>
 		HAL_UART_Transmit(&huart2, (uint8_t*) data, strlen(data), 1000);
- 8001120:	4823      	ldr	r0, [pc, #140]	; (80011b0 <main+0x2b0>)
- 8001122:	f7ff f85d 	bl	80001e0 <strlen>
- 8001126:	4603      	mov	r3, r0
- 8001128:	b29a      	uxth	r2, r3
- 800112a:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
- 800112e:	4920      	ldr	r1, [pc, #128]	; (80011b0 <main+0x2b0>)
- 8001130:	4822      	ldr	r0, [pc, #136]	; (80011bc <main+0x2bc>)
- 8001132:	f003 f912 	bl	800435a <HAL_UART_Transmit>
+ 8001124:	4822      	ldr	r0, [pc, #136]	; (80011b0 <main+0x2b0>)
+ 8001126:	f7ff f85b 	bl	80001e0 <strlen>
+ 800112a:	4603      	mov	r3, r0
+ 800112c:	b29a      	uxth	r2, r3
+ 800112e:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
+ 8001132:	491f      	ldr	r1, [pc, #124]	; (80011b0 <main+0x2b0>)
+ 8001134:	4821      	ldr	r0, [pc, #132]	; (80011bc <main+0x2bc>)
+ 8001136:	f003 f910 	bl	800435a <HAL_UART_Transmit>
 		HAL_UART_Transmit(&huart2, (uint8_t*) data1, strlen(data1), 1000);
- 8001136:	4820      	ldr	r0, [pc, #128]	; (80011b8 <main+0x2b8>)
- 8001138:	f7ff f852 	bl	80001e0 <strlen>
- 800113c:	4603      	mov	r3, r0
- 800113e:	b29a      	uxth	r2, r3
- 8001140:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
- 8001144:	491c      	ldr	r1, [pc, #112]	; (80011b8 <main+0x2b8>)
- 8001146:	481d      	ldr	r0, [pc, #116]	; (80011bc <main+0x2bc>)
- 8001148:	f003 f907 	bl	800435a <HAL_UART_Transmit>
+ 800113a:	481f      	ldr	r0, [pc, #124]	; (80011b8 <main+0x2b8>)
+ 800113c:	f7ff f850 	bl	80001e0 <strlen>
+ 8001140:	4603      	mov	r3, r0
+ 8001142:	b29a      	uxth	r2, r3
+ 8001144:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
+ 8001148:	491b      	ldr	r1, [pc, #108]	; (80011b8 <main+0x2b8>)
+ 800114a:	481c      	ldr	r0, [pc, #112]	; (80011bc <main+0x2bc>)
+ 800114c:	f003 f905 	bl	800435a <HAL_UART_Transmit>
 		HAL_UART_Transmit(&huart6, (uint8_t*) data1, strlen(data1), 1000);
- 800114c:	481a      	ldr	r0, [pc, #104]	; (80011b8 <main+0x2b8>)
- 800114e:	f7ff f847 	bl	80001e0 <strlen>
- 8001152:	4603      	mov	r3, r0
- 8001154:	b29a      	uxth	r2, r3
- 8001156:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
- 800115a:	4917      	ldr	r1, [pc, #92]	; (80011b8 <main+0x2b8>)
- 800115c:	480d      	ldr	r0, [pc, #52]	; (8001194 <main+0x294>)
- 800115e:	f003 f8fc 	bl	800435a <HAL_UART_Transmit>
+ 8001150:	4819      	ldr	r0, [pc, #100]	; (80011b8 <main+0x2b8>)
+ 8001152:	f7ff f845 	bl	80001e0 <strlen>
+ 8001156:	4603      	mov	r3, r0
+ 8001158:	b29a      	uxth	r2, r3
+ 800115a:	f44f 737a 	mov.w	r3, #1000	; 0x3e8
+ 800115e:	4916      	ldr	r1, [pc, #88]	; (80011b8 <main+0x2b8>)
+ 8001160:	480c      	ldr	r0, [pc, #48]	; (8001194 <main+0x294>)
+ 8001162:	f003 f8fa 	bl	800435a <HAL_UART_Transmit>
 		HAL_Delay(100);
- 8001162:	2064      	movs	r0, #100	; 0x64
- 8001164:	f000 fcda 	bl	8001b1c <HAL_Delay>
+ 8001166:	2064      	movs	r0, #100	; 0x64
+ 8001168:	f000 fcd8 	bl	8001b1c <HAL_Delay>
 		HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_SET); // pull the TRIG pin HIGH
- 8001168:	e6f9      	b.n	8000f5e <main+0x5e>
- 800116a:	bf00      	nop
- 800116c:	f3af 8000 	nop.w
+ 800116c:	e6f7      	b.n	8000f5e <main+0x5e>
+ 800116e:	bf00      	nop
  8001170:	b020c49c 	.word	0xb020c49c
  8001174:	3fa16872 	.word	0x3fa16872
  8001178:	47ae147b 	.word	0x47ae147b
