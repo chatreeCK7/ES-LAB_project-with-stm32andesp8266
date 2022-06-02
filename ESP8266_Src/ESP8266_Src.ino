@@ -155,7 +155,7 @@ void loop() {
             client.println("<script>let counter = 1;setInterval(() => {counter++;if(counter > 25) location.reload();}, 200);</script>");
 //            client.println("<script>redir(()=>{window.location.replace(\"172.20.10.2/5/on\");});</script>");
 //            client.println("<script>if(distance<=40) redir(); </script>");
-            if(distance <=40 && outputLD2 == "off"){
+            if(distance <=60 && outputLD2 == "off"){
               outputLD2=="on";
               state = true;
               Serial.println("REDIRECT!!!!! : http://" + IP + "/5/on");
